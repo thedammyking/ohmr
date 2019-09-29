@@ -1,31 +1,55 @@
-module.exports = {
-  create: (req, res) => {
-    if (req.body.password !== req.body.confirmPassword) {
-      return ResponseService.json(401, res, `Password doesn't match`);
-    }
+const generateToken = (userId) => {
+  return JwtService.issue({
+    id: userId
+  });
+};
 
-    const allowedParameters = [
-      'email', 'password'
-    ];
+const createUser = (res, data) => User.create(data).fetch().then(user => {
+  const responseData = {
+    user: user,
+    token: generateToken(user.id)
+  };
+  return ResponseService.json(200, res, 'User created successfully', responseData);
+});
 
-    const data = _.pick(req.body, allowedParameters);
+const userExists = (res) => {
+  return ResponseService.json(400, res, 'User exits already');
+};
 
+const verifyParams = (res, email, password) => {
+  if (!email || !password) {
+    return ResponseService.json(401, res, 'Email and password required');
+  }
+};
 
+const create = (req, res) => {
+  const {
+    email,
+    password
+  } = req.body;
+
+  verifyParams(res, email, password);
+
+  const allowedParameters = [
+    'email', 'password'
+  ];
+
+  const data = _.pick(req.body, allowedParameters);
+
+  try {
     User.findOne({
       email: data.email
     }).then(user => {
       if (!user) {
-        return User.create(data).fetch().then(user => {
-          const responseData = {
-            user: user,
-            token: JwtService.issue({
-              id: user.id
-            })
-          };
-          return ResponseService.json(200, res, 'User created successfully', responseData);
-        });
+        return createUser(res, data);
       }
-      return ResponseService.json(400, res, 'User exits already');
-    }).catch(error => ResponseService.json(400, res, `${error.message}`, error.Errors));
+      return userExists(res);
+    });
+  } catch (error) {
+    return ResponseService.json(400, res, `${error.message}`, error.Errors)
   }
+}
+
+module.exports = {
+  create
 };
