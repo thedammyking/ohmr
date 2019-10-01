@@ -9,6 +9,11 @@
  */
 
 module.exports.routes = {
-  'post /signup': 'UserController.create',
-  'post /signin': 'AuthController.login',
+  'POST /signup': 'UserController.create',
+  'POST /signin': 'AuthController.login',
+  'POST /event': 'EventController.create',
+  'GET /event': 'EventController.get',
+  'GET /event/:id': 'EventController.get',
+  'DELETE /event': 'EventController.delete',
+  'PUT /event/:id': 'EventController.update',
 };
