@@ -33,6 +33,12 @@ module.exports = {
       type: 'string',
       required: true,
     },
+
+    // Add a reference to Tickets
+    tickets: {
+      collection: 'ticket',
+      via: 'event'
+    },
     // Add a reference to User
     organizer: {
       model: 'user'
