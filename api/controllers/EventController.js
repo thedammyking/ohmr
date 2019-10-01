@@ -2,21 +2,33 @@ const createEvent = (res, data) =>
   Event.create(data)
     .fetch()
     .then(event => {
-      return ResponseService.json(
-        200,
-        res,
-        'Event created successfully',
-        event
-      );
+      if (event) {
+        return ResponseService.json(
+          200,
+          res,
+          'Event created successfully',
+          event
+        );
+      }
+
+      return ResponseService.json(404, res, 'Event can not be created', ticket);
     });
 
 const findOne = (res, id) =>
   Event.findOne({
     id
   })
-    .then(event =>
-      ResponseService.json(200, res, 'Event fetched successfully', event)
-    )
+    .then(event => {
+      if (event) {
+        return ResponseService.json(
+          200,
+          res,
+          'Event fetched successfully',
+          event
+        );
+      }
+      return ResponseService.json(404, res, 'Event not found');
+    })
     .catch(error =>
       ResponseService.json(400, res, `${error.message}`, error.Errors)
     );
@@ -27,9 +39,17 @@ const findAll = (res, organizer) =>
       organizer
     }
   })
-    .then(events =>
-      ResponseService.json(200, res, 'Events fetched successfully', events)
-    )
+    .then(events => {
+      if (events.length) {
+        return ResponseService.json(
+          200,
+          res,
+          'Events fetched successfully',
+          events
+        );
+      }
+      return ResponseService.json(404, res, 'Events not found');
+    })
     .catch(error =>
       ResponseService.json(400, res, `${error.message}`, error.Errors)
     );
@@ -49,11 +69,21 @@ const destroyOne = (res, id) =>
     );
 
 const updateOne = (res, data, id) =>
-  Event.updateOne({ id })
+  Event.updateOne({
+    id
+  })
     .set(data)
-    .then(event =>
-      ResponseService.json(200, res, 'Events updated successfully', event)
-    )
+    .then(event => {
+      if (event) {
+        return ResponseService.json(
+          200,
+          res,
+          'Events updated successfully',
+          event
+        );
+      }
+      return ResponseService.json(404, res, `Event not found`);
+    })
     .catch(error =>
       ResponseService.json(400, res, `${error.message}`, error.Errors)
     );
