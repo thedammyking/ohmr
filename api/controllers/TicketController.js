@@ -89,10 +89,13 @@ const updateOne = (res, data, id) =>
     );
 
 const create = (req, res) => {
-  const { params } = req;
-  const allowedParameters = ['ticketNumber', 'status'];
-  const data = _.pick(req.body, allowedParameters);
-  data.event = params.event_id;
+  const {
+    params: { event_id: event }
+  } = req;
+  const data = {
+    ticketNumber: TicketService.generate(event),
+    event
+  };
 
   try {
     return createTicket(res, data);
@@ -118,7 +121,7 @@ const deleteTicket = (req, res) => {
 
 const updateTicket = (req, res) => {
   const { params } = req;
-  const allowedParameters = ['ticketNumber', 'status'];
+  const allowedParameters = ['status'];
   const data = _.pick(req.body, allowedParameters);
   data.event = params.event_id;
 
