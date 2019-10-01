@@ -21,7 +21,7 @@ module.exports = {
       required: true,
     },
 
-    // Add a reference to Pets
+    // Add a reference to Events
     events: {
       collection: 'event',
       via: 'organizer'
