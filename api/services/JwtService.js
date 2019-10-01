@@ -9,7 +9,7 @@ module.exports = {
       });
       return token;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   },
 
