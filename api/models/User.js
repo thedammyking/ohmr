@@ -21,6 +21,12 @@ module.exports = {
       required: true,
     },
 
+    // Add a reference to Pets
+    events: {
+      collection: 'event',
+      via: 'organizer'
+    }
+
   },
 
   customToJSON: function () {
